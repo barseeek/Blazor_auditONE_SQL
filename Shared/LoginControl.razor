@@ -1,0 +1,50 @@
+﻿@page "/loginControl"
+@using System.Web;
+
+@using Microsoft.EntityFrameworkCore
+
+@using Radzen.Blazor
+@using Radzen
+@using Blazor_auditONE_SQL.Data
+
+@inject DialogService dialogService
+
+@inject UserData usr;
+
+@inject IJSRuntime _js;
+
+@inject DialogService dialogService
+
+
+<AuthorizeView>
+    <Authorized>
+
+        <b>Добро пожаловать, @context.User.Identity.Name</b>
+        <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="settings" Size="ButtonSize.Small" Click="@((args) => ChangePassword())" Style="margin-left:10px;    background-color: #395ba9 !important;"></RadzenButton>
+        <a style="        background-color: #395ba9;" class="ml-md-auto btn btn-primary"
+           href="/Logout"
+           target="_top">Выход</a>
+
+
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+
+    void ChangePassword()
+    {
+
+        //dialogService.Open<UserAccountSettings>("Установка пароля для пользователя " + usr.name, new Dictionary<string, object>() { { "username", usr.name } });
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //hideShit();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        _js.InvokeVoidAsync("hideMeThatShit", "logInBar");
+    }
+}

@@ -1,0 +1,64 @@
+﻿@page "/dialogfinishincident"
+
+@using Blazor_auditONE_SQL.Data
+@using Blazor_auditONE_SQL.Models
+@using Blazor_auditONE_SQL.Pages
+@using Blazor_auditONE_SQL.Shared
+@inject DialogService dialogService
+@inject UserModelService userService
+<style>
+    .rz-dialog-content{
+        padding: 0rem;
+    }
+</style>
+<RadzenCard Style="border:0px;">
+    <div class="row">
+        <div class="col-4">
+            <div>Пользователь, загрузивший фото:</div>
+            <b>@(incident.user_firstname + " " + incident.user_lastname)</b>
+            <div style="margin-top:20px">Инцидент:</div>
+            <RadzenImage Path="@String.Format("data:image;base64,{0}", Convert.ToBase64String(incident.file_data))" Style="display:block; margin-left: auto; margin-right:auto; margin-bottom:auto; margin-top:auto; width: 70%" />
+            <br />
+            <div>Проблема:</div>
+            <b>@incident.description</b>
+
+        </div>
+        <div class="col-8">
+            <b>Проверьте исполнение инцидента:</b>
+            <div>Фото:</div>
+            <RadzenImage Path="@String.Format("data:image;base64,{0}", Convert.ToBase64String(incident.comment_data))" Style="display:block; margin-left: auto; margin-right:auto; margin-bottom:auto; margin-top:auto; max-height: 500px" />
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <div class="textarea">
+                <div style="margin-top:20px">Добавить комментарий:</div>
+                <RadzenTextArea @bind-Value=@add_comment Cols="15" Rows="5" Disabled="false" />
+            </div>
+        </div>
+        <div class="col-8">
+            <div style="margin-top:20px">Лог комментариев:</div>
+            <div class="textarea">
+                <RadzenTextArea @bind-Value=@incident.comment Cols="25" Rows="5" Disabled="true" />
+
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <RadzenButton Click="@((args) => dialogService.Close(true))" Text="Да" Style="margin-bottom: 10px; margin-top: 30px; width: 150px" />
+            <RadzenButton Click="@Close" ButtonStyle="ButtonStyle.Secondary" Text="Отправить на доработку" Style="margin-bottom: 10px; margin-top: 30px; width: 300px" />
+        </div>
+    </div>
+</RadzenCard>
+@code {
+    [Parameter] public PhotoModel incident { get; set; }
+    [Parameter] public UserModel current_user { get; set; }
+    string add_comment = String.Empty;
+    void Close()
+    {
+        incident.comment = Environment.NewLine + "[ " + DateTime.Now + " ] " + current_user.firstname + " " + current_user.lastname + " оставил комментарий: " + add_comment + Environment.NewLine + incident.comment;
+        dialogService.Close(incident);
+    }
+}

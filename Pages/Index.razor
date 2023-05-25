@@ -1,0 +1,62 @@
+﻿@page "/"
+
+
+@using Blazor_auditONE_SQL.Data
+@inject DialogService dialogService
+@inject NotificationService notificationService
+@inject IJSRuntime _js;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+@using Radzen.Blazor
+<AuthorizeView>
+
+    @if (dim != null && dim.Width > 769)//desktop view
+    {
+
+    }
+
+    @if (dim != null)//mobile view
+    {
+
+
+        @if (AuthorizedUsers.getUserRole(context.User.Identity.Name) != "view_all_only")
+        {
+            <div class="container-fluid">
+                <b>Для просмотра доступных Вам инцидентов, выберите пункт меню "Incidents" </b>
+                <div class="yo">
+
+
+                </div>
+            </div>
+        }
+
+    }
+</AuthorizeView>
+
+
+
+@code {
+
+
+
+    BrowserDimension dim;
+    public class BrowserDimension
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
+    }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        string role = AuthorizedUsers.getUserRole(user.Identity.Name);
+        dim = await _js.InvokeAsync<BrowserDimension>("getDimensions");
+
+        StateHasChanged();
+    }
+
+}

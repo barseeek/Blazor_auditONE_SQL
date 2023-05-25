@@ -1,0 +1,63 @@
+﻿@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+@inject IJSRuntime _js;
+
+@using Radzen.Blazor;
+@using Radzen;
+@using System.Web;
+@using Blazor_auditONE_SQL.Data;
+@inject UserData usr;
+
+
+@using Microsoft.EntityFrameworkCore;
+
+<RadzenDialog />
+<RadzenNotification />
+<AuthorizeView>
+    <NotAuthorized>
+        <LoginDialog />
+    </NotAuthorized>
+
+    <Authorized>
+        @if (context.User.Identity.Name != "")
+        {
+            //fill_user_data();
+
+
+            <div class="sidebar col-1" style="padding-left: 0 !important; padding-right: 0 !important;">
+                <NavMenu /> 
+
+            </div>
+
+            <div class="main col-11">
+                <div class="top-row px-4">
+
+                    <LoginControl />
+                </div>
+                <div class="content px-4">
+                    @Body
+                </div>
+            </div>
+        }
+        else
+        {
+            <LoginDialog />
+        }
+
+
+
+    </Authorized>
+
+</AuthorizeView>
+
+<div id="logInBar" class="lds-facebook"><div></div><div></div><div></div></div>
+
+@code {
+
+
+
+
+
+}

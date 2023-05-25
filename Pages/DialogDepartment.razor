@@ -1,0 +1,83 @@
+﻿@page "/dialogdepartment"
+
+@using Blazor_auditONE_SQL.Data
+@using Blazor_auditONE_SQL.Models
+@using Blazor_auditONE_SQL.Pages
+@using Blazor_auditONE_SQL.Shared
+@inject DialogService dialogService
+@inject UserModelService userService
+
+
+<h1>Выберите группу рассылки для инцидента</h1>
+<RadzenCheckBoxList @ref="checkboxlist" @bind-Value=@values TextProperty="Name" ValueProperty="Id" TValue="int" Orientation="Orientation.Vertical" Change=@(args => OnChange(args))>
+    <Items>
+        @foreach (DepartmentModel item in deps)
+        {
+            //выбираем user_id пользователей, принадлежащих департаменту item
+            dep_user_ids = users_deps.Where(x => x.department_id == item.id).Select(x => x.user_id);
+            //выбираем lastname пользователей, принадлежащих департаменту item
+            dep_user_lastnames = from huy in dep_user_ids from u in users where huy == u.id select u.lastname;
+
+            zaloopa2 = item.department + " (" + String.Join(", ", dep_user_lastnames.ToArray()) + ")";
+
+            <RadzenCheckBoxListItem Text="@zaloopa2" Value="item.id" />
+        }
+
+        @*@foreach (UserDepartmentModel user_dep in users_deps)
+            {
+                user_dep.user_id = users_deps.Where(s => s.department_id == item.id).Select(s => s.user_id).ToList();
+                zaloopa2 = String.Join(", ", zaloopa.ToArray());
+                <RadzenLabel Text="@zaloopa2"/>
+            }*@
+
+
+    </Items>
+</RadzenCheckBoxList>
+<RadzenButton Click=@(args => OnClick((List<int>) values)) Text="Сохранить" Style="margin-bottom: 20px; width: 150px" Disabled="@button_disable"  />
+@code {
+
+    RadzenCheckBoxList<int> checkboxlist;
+    [Parameter] public List<DepartmentModel> deps { get; set; }
+    [Parameter] public int id { get; set; }
+    //[Parameter] public List<UserModel> users { get; set; }
+    List<UserModel> users;
+    List<UserDepartmentModel> users_deps = new List<UserDepartmentModel>();
+    List<int> zaloopa;
+    string zaloopa2;
+    bool button_disable = true;
+    //List<string> zaloopa2 = new List<string>();
+    IEnumerable<int> values;
+    IEnumerable<int> dep_user_ids;
+    IEnumerable<string> dep_user_lastnames;
+    protected override async Task OnInitializedAsync()
+    {
+        // values should contain a list of checked IDs from the database
+
+        values = (IEnumerable<int>)deps.Where(s => s.isChecked == true).Select(s => s.id);
+        users = await Task.Run(() => userService.GetUsersDropDownAsync());
+        users_deps = await Task.Run(() => userService.GetUsersDepartmentsAsync());
+        await InvokeAsync(StateHasChanged);
+    }
+    void OnChange(object args)
+    {
+        values = (List<int>)args;
+        if (values.Count()!=0)
+            button_disable = false;
+        else
+            button_disable = true;
+
+        InvokeAsync(StateHasChanged);
+    }
+    void OnClick(List<int> args)
+    {
+        foreach (DepartmentModel huy in deps)
+            deps[huy.id - 1].isChecked = false;
+        foreach (int arg in values)
+        {
+
+            deps[arg - 1].isChecked = true;
+        }
+        dialogService.Close(result: values);
+    }
+
+}

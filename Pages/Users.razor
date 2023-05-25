@@ -1,0 +1,43 @@
+﻿@page "/users"
+
+@using Blazor_auditONE_SQL.Models
+@using Microsoft.Extensions.Configuration
+@using Blazor_auditONE_SQL.Data
+@inject UserModelService userService
+@inject IConfiguration _config
+
+<h1>Пользователи</h1>
+
+<RadzenDataGrid TItem="UserModel" Data="@users">
+    <Columns>
+        <RadzenDataGridColumn TItem="UserModel" Property="id" Title="ID" Width="50px" TextAlign="TextAlign.Center" />
+        <RadzenDataGridColumn TItem="UserModel" Property="login" Title="Логин" Sortable="true" Width="Auto" />
+        <RadzenDataGridColumn TItem="UserModel" Property="firstname" Title="Имя" Sortable="false" Width="Auto" />
+        <RadzenDataGridColumn TItem="UserModel" Property="lastname" Title="Фамилия" Sortable="true" Width="Auto" />
+        <RadzenDataGridColumn TItem="UserModel" Property="head_fullname" Title="Начальник" Sortable="true" Width="Auto" />
+        @*<RadzenDataGridColumn TItem="UserModel" Property="head_id" Title="Начальник" Sortable="true" Width="Auto" />*@
+        <RadzenDataGridColumn TItem="UserModel" Property="permissions" Title="Роль" Sortable="false" Width="Auto" />
+        <RadzenDataGridColumn TItem="UserModel" Property="login_mm" Title="Логин ММ" Sortable="true" Width="Auto" />
+
+    </Columns>
+</RadzenDataGrid>
+
+
+@code {
+
+    List<UserModel> users;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        //string sql_users = "Select [AuditONE_SQL].[dbo].[Users_from_tg].id, [AuditONE_SQL].[dbo].[Users_from_tg].login, [AuditONE_SQL].[dbo].[Users_from_tg].firstname, [AuditONE_SQL].[dbo].[Users_from_tg].lastname, droch.firstname,droch.lastname from [AuditONE_SQL].[dbo].[Users_from_tg] left join [AuditONE_SQL].[dbo].[Users_from_tg] as droch on [AuditONE_SQL].[dbo].[Users_from_tg].head_id=droch.id";
+        //string sql_users = "SELECT dbo.Users_from_tg.id, dbo.Users_from_tg.login, dbo.Users_from_tg.firstname, dbo.Users_from_tg.lastname," +
+        //        " dbo.Users_from_tg.head_id, dbo.Users_from_tg.permissions, dbo.Users_from_tg.login_mm FROM dbo.Users_from_tg";
+        string sql_users = "SELECT dbo.Users_from_tg.id, dbo.Users_from_tg.login, dbo.Users_from_tg.firstname, dbo.Users_from_tg.lastname," +
+        "droch.firstname as hueta, droch.lastname as huetahueta, dbo.Users_from_tg.permissions, dbo.Users_from_tg.login_mm FROM dbo.Users_from_tg LEFT JOIN dbo.Users_from_tg as droch on dbo.Users_from_tg.head_id=droch.id";
+        users = await Task.Run(() => userService.GetUsersAsync(sql_users));
+
+    }
+}
+

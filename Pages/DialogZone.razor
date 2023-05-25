@@ -1,0 +1,68 @@
+﻿@page "/dialogzone"
+
+@using Blazor_auditONE_SQL.Data
+@using Blazor_auditONE_SQL.Models
+@using Blazor_auditONE_SQL.Pages
+@using Blazor_auditONE_SQL.Shared
+@inject DialogService dialogService
+@inject UserModelService userService
+<style>
+    .rz-radio-button-list-vertical .rz-radio-btn {
+        margin: 0.35rem 0;
+    }
+    .rz-dialog-content {
+        padding: 0.25rem;
+    }
+    .rz-dialog-wrapper .rz-dialog {
+        display: inline-grid;
+    }
+    </style>
+<RadzenCard>
+    <RadzenRadioButtonList @bind-Value=@current_zone TValue="string" Orientation="Orientation.Vertical" Z
+                           Data="@zone_values" />
+    <RadzenButton Click=@(() => SaveZone(id, current_zone)) Text="Сохранить" Style="margin-bottom: 20px; margin-top:20px; width: 150px" />
+
+</RadzenCard>
+@code
+{
+    [Parameter] public int id { get; set; }
+    string current_zone;
+    List<string> zone_values; //values for photo.zone
+
+    protected override async Task OnInitializedAsync()
+    {
+        zone_values = new List<string>();
+        zone_values.Add("Буферная зона, комната приёма пищи, курилка");
+        zone_values.Add("Gluing (Департамент склейки)");
+        zone_values.Add("HF( 505,506) Горячее тиснение");
+        zone_values.Add("Штанцевальный участок ");
+        zone_values.Add("Manz,Clumshell Помещение Манц, Кламшелл");
+        zone_values.Add("УПЛИК- производство");
+        zone_values.Add("УПЛИК - склады ");
+        zone_values.Add("Склад сырья и материалов ");
+        zone_values.Add("OFSET Printing Департамент офсетной печати");
+        zone_values.Add("Die Cutting Департамент вырубки - основная зона");
+        zone_values.Add("Департамент вырубки- 534,598");
+        zone_values.Add("Аккумуляторная, прессовая");
+        zone_values.Add("Насосная, дренчерная");
+        zone_values.Add("Lamination , Cross cutting УЛиР");
+        zone_values.Add("HF (535) Горячее тиснение(GIETZ)");
+        zone_values.Add("Ротогравюра (склад, мойка)");
+        zone_values.Add("Ротогравюра (Производство)");
+        zone_values.Add("FLEXO Флексо печать ");
+        zone_values.Add("Ротогравюра Чайная машина ");
+        zone_values.Add("Участок формирования (у 534,598)");
+        zone_values.Add("Участок формирования (основная зона)");
+        zone_values.Add("Отдел качества (офисы, лаборатория)");
+        zone_values.Add("СТР (препресс)");
+        zone_values.Add("Участок этикетки");
+        zone_values.Add("Ремонтная служба (у склейки)");
+        zone_values.Add("Кабинет заточника");
+        zone_values.Add("Служба эксплуатации (электрики у 305)");
+    }
+    void SaveZone(int id, string zone)
+    {
+        dialogService.Close(result: zone);
+    }
+}
+

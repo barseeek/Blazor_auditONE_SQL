@@ -1,0 +1,15 @@
+﻿@page "/dialogphoto/{id}"
+
+@using Blazor_auditONE_SQL.Data
+@using Blazor_auditONE_SQL.Models
+@using Blazor_auditONE_SQL.Pages
+@inject DialogService dialogService
+
+
+
+<RadzenImage Path="@String.Format("data:image;base64,{0}", Convert.ToBase64String(file_data))" Style="display:block; margin-left: auto; margin-right:auto; margin-bottom:auto; margin-top:auto; width: 100%"/>
+@code {
+    [Parameter] public byte[] file_data { get; set; }
+    [Parameter] public int id { get; set; }
+
+}

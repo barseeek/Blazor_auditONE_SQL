@@ -1,0 +1,33 @@
+﻿<div class="top-row pl-4 navbar navbar-dark" style="padding-left: 0 !important; padding-right: 0 !important; ">
+    <a class="navbar-brand" href="" style="padding-left: 30px">AuditONE</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="datagrid" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Incidents
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="users">
+                <span class="oi oi-plus" aria-hidden="true"></span> Users
+            </NavLink>
+        </li>
+        
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
